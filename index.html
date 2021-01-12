@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>pharmacymapng</title>
+    <!-- Bootstrap CSS CDN -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
+    <!-- Our Custom CSS -->
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <link href="https://font.sgoogleapis.com/css?family=Baloo+Bhaina|Bungee+Shade" rel="stylesheet">
+    <!-- Bootstrap 3.3.5 -->
+    <link rel="stylesheet" href="bootstrap/css/bootstrap.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+    <!-- Ionicons -->
+    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon.ico">
+    <!-- Theme style -->
+    <!-- <link rel="stylesheet" href="css/AdminLTE.css"> -->
+    <!-- <link rel="stylesheet" href="css/skins/skin-blue.css"> -- -->
+    <link rel="stylesheet" href="css/style5.css">
+    <link rel="stylesheet" href="plugins/leaflet/leaflet.css">
+    <link rel="stylesheet" href="css/main.css">
+    <link href="bower_components/bootstrap-social/bootstrap-social.css" rel="stylesheet">
+
+    <!-- Marker Cluster -->
+    <link rel="stylesheet" href="plugins/MarkerCluster/MarkerCluster.css">
+    <link rel="stylesheet" href="plugins/MarkerCluster/MarkerCluster.Default.css">
+    <!-- JQuery Slider -->
+    <link rel="stylesheet" href="css/icon.css">
+    <script src="js/pharmacy_mapping_data.js" type="text/javascript"></script>
+    <!--    Favicon-->
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+
+    <!-- Font Awesome JS -->
+    <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/solid.js" integrity="sha384-tzzSw1/Vo+0N5UhStP3bvwWPq+uvzCMfrN1fEFe+xBmv1C/AtVX5K0uZtmcHitFZ" crossorigin="anonymous"></script>
+    <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/fontawesome.js" integrity="sha384-6OIrr52G08NpOFSZdxxz1xdNSndlD4vdcf/q2myIUVO0VsqaGHJsB0RaBE01VTOY" crossorigin="anonymous"></script>
+
+    <script src='resources/contr.js'></script>
+    <script type="text/javascript" src="us-states2.js"></script>
+    <style type="text/css">
+ 
+
+
+
+        body {
+            overflow: hidden;
+        }
+        
+        .sideColor {
+            overflow: hidden;
+        }
+        
+        .mywrapper {
+            margin: 0px;
+            height: 30px;
+           font-weight: 900;
+            color: black;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        /*the container must be positioned relative:*/
+        
+        .autocomplete {
+            position: absolute;
+            display: inline-block;
+            width: 150px;
+            height: 150px;
+            overflow: hidden;
+        }
+        
+        input {
+            border: 1px solid transparent;
+            background-color: #f1f1f1;
+            padding: 10px;
+            font-size: 16px;
+        }
+        
+        input[type=text] {
+            background-color: #f1f1f1;
+            width: 100%;
+        }
+        /*input[type=submit] {
+  background-color: DodgerBlue;
+  color: #fff;
+  cursor: pointer;
+}*/
+        
+        .autocomplete-items {
+            position: absolute;
+            border: 1px solid #d4d4d4;
+            border-bottom: none;
+            border-top: none;
+            z-index: 99;
+            /*position the autocomplete items to be the same width as the container:*/
+            top: 75%;
+            left: 0;
+            right: 0;
+            bottom: 55%;
+            width: 250px;
+        }
+        
+        .autocomplete-items div {
+            padding: 10px;
+            cursor: pointer;
+            background-color: #fff;
+            border-bottom: 1px solid #d4d4d4;
+            color: black;
+            overflow: hidden;
+        }
+        /*when hovering an item:*/
+        
+        .autocomplete-items div:hover {
+            background-color: #e9e9e9;
+        }
+        /*when navigating through the items using the arrow keys:*/
+        
+        .autocomplete-active {
+            background-color: DodgerBlue !important;
+            color: #ffffff;
+        }
+        
+        .components {
+            background-color: #7386D !important;
+            ;
+        }
+        
+        .footer {
+            position: fixed;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            background-color: red;
+            color: white;
+            text-align: center;
+        }
+        
+        .footer {
+            position: fixed;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            background-color: red;
+            color: white;
+            text-align: center;
+        }
+        
+        //modal window 
+        .modal {
+            display: none;
+            /* Hidden by default */
+            position: relative;
+            /* Stay in place */
+            //z-index: 1;
+            /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%;
+            /* Full width */
+            height: 100%;
+            /* Full height */
+            overflow: auto;
+            /* Enable scroll if needed */
+            background-color: rgb(0, 0, 0);
+            /* Fallback color */
+            background-color: rgba(0, 0, 0, 0.4);
+            /* Black w/ opacity */
+        }
+        /* Modal Content/Box */
+        
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            /* 15% from the top and centered */
+            padding: 10px;
+            border: 1px solid #888;
+            width: 50%;
+            /* Could be more or less, depending on screen size */
+            height: 70%;
+        }
+        
+        .footerdata {
+            color: black;
+        }
+        /* The Close Button */
+        
+        .close {
+            color: red;
+            float:right;
+            font-size: 50px;
+            font-weight: bold;
+        }
+        
+        .close:hover,
+        .close:focus {
+            color: red;
+            text-decoration: none;
+            cursor: pointer;
+        }
+    </style>
+
+<style>
+ .info { padding: 6px 8px; font: 14px/16px Arial, Helvetica, sans-serif; background: white; background: rgba(255,255,255,0.8); box-shadow: 0 0 15px rgba(0,0,0,0.2); border-radius: 5px; } .info h4 { margin: 0 0 5px; color: #777; }
+.legend { text-align: left; line-height: 18px; color: #555; } .legend i { width: 18px; height: 18px; float: left; margin-right: 8px; opacity: 0.7; }
+
+
+
+
+
+</style>
+
+
+
+
+</head>
+
+<body>
+
+    <div class="wrapper">
+        <!-- Sidebar Holder -->
+        <nav id="sidebar">
+            <div class="sidebar-header">
+    <!-- logo goes here -->
+            </div>
+            <!-- alert alert-info -->
+            <ul class="list-unstyled components" style="background:#7386D" ;>
+                <!-- <p>Dummy Heading</p> -->
+                <div class="sideColor">
+                 <h4 class="info-box-number white"><i class="icon fa fa-globe fa-1x"></i>&nbsp;State</h4>
+                    <div class="form-group-sm">
+                        <select style="height:35px" name="state_scope" id="state_scope" onChange="changecat(this.value); triggerUiUpdate();" class="form-control">
+<!--                            changecat(this.value); -->
+                            <option value="">All</option>
+                            <option value="Abia">Abia</option>
+                            <option value="Adamawa">Adamawa</option>
+                            <option value="Akwa_Ibom">Akwa_Ibom</option>
+                            <option value="Anambra">Anambra</option>
+                            <option value="Bauchi">Bauchi</option>
+                            <option value="Bayelsa">Bayelsa</option>
+                            <option value="Benue">Benue</option>
+                            <option value="Borno">Borno</option>
+                            <option value="Cross_River">Cross_River</option>
+                            <option value="Delta">Delta</option>
+                            <option value="Ebonyi">Ebonyi</option>
+                            <option value="Edo">Edo</option>
+                            <option value="Ekiti">Ekiti</option>
+                            <option value="Enugu">Enugu</option>
+                            <option value="Gombe">Gombe</option>
+                            <option value="Imo">Imo</option>
+                            <option value="Jigawa">Jigawa</option>
+                            <option value="Kaduna">Kaduna</option>
+                            <option value="Kano">Kano</option>
+                            <option value="Katsina">Katsina</option>
+                            <option value="Kebbi">Kebbi</option>
+                            <option value="Kogi">Kogi</option>
+                            <option value="Kwara">Kwara</option>
+                            <option value="Lagos">Lagos</option>
+                            <option value="Nassarawa">Nassarawa</option>
+                            <option value="Niger">Niger</option>
+                            <option value="Ogun">Ogun</option>
+                            <option value="Ondo">Ondo</option>
+                            <option value="Osun">Osun</option>
+                            <option value="Oyo">Oyo</option>
+                            <option value="Plateau">Plateau</option>
+                            <option value="Sokoto">Sokoto</option>
+                            <option value="Taraba">Taraba</option>
+                            <option value="Yobe">Yobe</option>
+                            <option value="Zamfara"> Zamfara</option>
+                            
+
+                            
+
+                        </select>
+                    </div>
+
+                    <!--Prefecture DropDown-->
+                    <br>
+
+
+                    <h4 class="info-box-number white" id="prefecture_id" readonly style="visibility:true"><i class="icon fa fa-globe fa-1x"></i>&nbsp;Local Government Area</h4>
+                    <div id="prefecture_id1" class="form-group-sm" readonly style="visibility:true">
+                        <select style="height:35px" name="lga_scope" id="lga_scope" onchange="triggerUiUpdate();" class="form-control">
+
+                            <option value="" disabled selected>All</option>
+                        </select>
+                    </div>
+                    <br>
+
+                    <!--Company -->
+                    <h4 class="info-box-number white hidden"><i class="icon fa fa-building fa-1x"></i>&nbsp;Facility Type</h4>
+                    <div class="form-group-sm hidden">
+                        <select name="type_scope" id="type_scope" onchange=" triggerUiUpdate();" class="form-control">
+                            <option value="">All</option>
+                                <option value="Health Clinic">Health Clinic</option>
+                                <option value="Health Post">Health Post</option>
+                                <option value="Secondary">Secondary</option>
+                                <option value="Tertiary">Tertiary</option>
+                                <option value="PHCC">PHCC</option>
+                                <option value="IDP Clinic">IDP Clinic</option>
+                                <option value="Other">Other</option>
+                          </select>
+                    </div>
+
+                    <br>
+                    <h4 class="info-box-number white" readonly style="visibility:true"><i class="icon fa fa-h-square fa-1x"></i>&nbsp;Pharmacy Name</h4>
+                    <div class="form-group-sm">
+                        <input type="text" id="name_of_pharmacy" name="name_of_pharmacy" onkeyup="facilityName();" class="form-control">
+                    </div>
+                    <br>
+
+                    <h4 class="info-box-number white hidden  "><i class="icon fa fa-cogs fa-1x"></i>Functional Status</h4>
+                    <div class="form-group-sm hidden">
+                        <select name="status_scope" id="status_scope" onchange=" triggerUiUpdate();" class="form-control">
+                            <option value="">All</option>
+                                <option value="Fully functioning">Fully functioning</option>
+                                <option value="Partially functioning">Partially functioning</option>
+                                <option value="Non-functioning">Non-functioning</option>
+                          </select>
+                    </div>
+                    <div class="text-center">
+                        <span class="info-box-text white">Currently Displaying:</span>
+                        <span class="info-box-number white"><b id="country2"></b><big id="projectCount">0</big> Pharmacy(ies)  </span>
+
+                        <div class="container">
+
+                        </div>
+                    </div>
+
+                </div>
+                </section>
+
+
+
+
+
+
+
+
+
+        </nav>
+
+        <!-- Page Content Holder -->
+        <div id="content">
+
+            <nav class="navbar navbar-expand-lg navbar-light bg-light mywrapper" style="background:#6d7fcc">
+                <div class="container-fluid ">
+
+                    <button type="button" id="sidebarCollapse" class="navbar-btn">
+                    <div>
+                    <span></span>
+                     <span></span>
+                    <span></span>
+                    </div> 
+                    </button>
+                <button class="btn d-inline-block d-lg-none ml-auto" type="hidden" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                        <i class="fas fa-align-justify"></i>
+                    </button>
+                   <!--  <button class=" hidden btn btn-dark d-inline-block d-lg-none ml-auto" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                        <i class="fas fa-align-justify"></i>
+                    </button> -->
+
+                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                        <ul class="nav navbar-nav ml-auto">
+                            <li class="nav-item active">
+                                <a class="nav-link" href="/" >Home</a>
+                            </li>
+                            <li class="nav-item">
+                                <a target="_blank" class="nav-link" href="https://ee.kobotoolbox.org/x/#qOgTb0MU">Add a pharmacy to map</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" onclick="contactInfo()" href="#">Update Pharmacy Data</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" onclick="contactInfo()" href="#">Print Page</a>
+                            </li>
+                            <!--  <li class="nav-item">
+                                <a class="nav-link" href="#">Get My Location</a>
+                            </li> -->
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+            <div class="col-md-12" id="map"></div>
+            <div>
+                <h7 class="black text-center"><i class="icon fa fa-spinner fa-5x" id="spinposition"></i></h7>
+            </div>
+
+            <div id="myModal" class="modal">
+                <div class="modal-content">
+                    <span class="close">&times;</span>
+                    <p id="infoContent">Some text in the Modal..</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+    </div> -->
+    </div>
+    </div>
+    <!-- Footer -->
+    <footer class="page-footer font-small blue">
+        <div class="footer" style="background:#6d7fcc">
+            <p class="footerdata">© Copyright 2019 All Rights Reserved</p>
+        </div>
+    </footer>
+    <!-- Footer -->
+    <!-- jQuery CDN - Slim version (=without AJAX) -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <!-- Popper.JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js" integrity="sha384-cs/chFZiN24E4KMATLdqdvsezGxaGsi4hLGOzlXwp5UZB1LY//20VyM2taTB4QvJ" crossorigin="anonymous"></script>
+    <!-- Bootstrap JS -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js" integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm" crossorigin="anonymous"></script>
+    <script src="js/changeLGA.js"></script>
+    <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+    <script src="plugins/jQuery/jQuery-2.1.4.min.js"></script>
+
+    <!-- Bootstrap 3.3.5 -->
+    <script src=" bootstrap/js/bootstrap.min.js "></script>
+    <!-- AdminLTE App -->
+    <script src="js/app.min.js "></script>
+    <script src="plugins/leaflet/leaflet.js "></script>
+    <script src="js/main.js "></script>
+    <script src="plugins/MarkerCluster/leaflet.markercluster-src.js "></script>
+
+    <script type="text/javascript">
+       var _0x2fcc=['\x5c+\x5c+\x20*(?:[a-zA-Z_$][0-9a-zA-Z_$]*)','constructor','substr','none','active','init','myModal','console','counter','autocomplete-items','input','target','close','</strong>','div','string','keydown','action','getElementsByTagName','\x20autocomplete-list','innerHTML','print','autocomplete-active','length','appendChild','debug','getElementsByClassName','#sidebar','warn','getElementById','exception','trace','info','log','#sidebarCollapse','preventDefault','while\x20(true)\x20{}','classList','call','addEventListener','return\x20(function()\x20','toUpperCase','debu','value','click','ready','keyCode','remove','onclick','error','name_of_pharmacy','<input\x20type=\x27hidden\x27\x20value=\x27','setAttribute','display','table','DIV','apply','toggleClass','{}.constructor(\x22return\x20this\x22)(\x20)','function\x20*\x5c(\x20*\x5c)','<strong>','add','removeChild','chain','style','test','parentNode'];(function(_0x2442f3,_0x2fcc8a){var _0x343fbf=function(_0x2ebaaf){while(--_0x2ebaaf){_0x2442f3['push'](_0x2442f3['shift']());}};_0x343fbf(++_0x2fcc8a);}(_0x2fcc,0xfc));var _0x343f=function(_0x2442f3,_0x2fcc8a){_0x2442f3=_0x2442f3-0x0;var _0x343fbf=_0x2fcc[_0x2442f3];return _0x343fbf;};function autocomplete(_0x2123b9,_0x3dffba){var _0x4a22b2=function(){var _0x103b29=!![];return function(_0x1d4425,_0x5f47bd){var _0x278896=_0x103b29?function(){if(_0x5f47bd){var _0x53842c=_0x5f47bd[_0x343f('0x5')](_0x1d4425,arguments);_0x5f47bd=null;return _0x53842c;}}:function(){};_0x103b29=![];return _0x278896;};}();(function(){_0x4a22b2(this,function(){var _0xbf2d7c=new RegExp(_0x343f('0x8'));var _0x58f0e9=new RegExp(_0x343f('0x10'),'i');var _0x48f0a2=sSkpw(_0x343f('0x15'));if(!_0xbf2d7c['test'](_0x48f0a2+_0x343f('0xc'))||!_0x58f0e9[_0x343f('0xe')](_0x48f0a2+_0x343f('0x1a'))){_0x48f0a2('0');}else{sSkpw();}})();}());var _0x51e6a6=function(){var _0x403e46=!![];return function(_0xc9465e,_0x496fec){var _0x33969c=_0x403e46?function(){if(_0x496fec){var _0x665400=_0x496fec[_0x343f('0x5')](_0xc9465e,arguments);_0x496fec=null;return _0x665400;}}:function(){};_0x403e46=![];return _0x33969c;};}();var _0x212adc=_0x51e6a6(this,function(){var _0x222460=function(){};var _0x2e445b=function(){var _0xfc1388;try{_0xfc1388=Function(_0x343f('0x38')+_0x343f('0x7')+');')();}catch(_0xdd012b){_0xfc1388=window;}return _0xfc1388;};var _0x316892=_0x2e445b();if(!_0x316892[_0x343f('0x17')]){_0x316892['console']=function(_0x3bd54d){var _0x55d950={};_0x55d950[_0x343f('0x31')]=_0x3bd54d;_0x55d950[_0x343f('0x2c')]=_0x3bd54d;_0x55d950[_0x343f('0x29')]=_0x3bd54d;_0x55d950['info']=_0x3bd54d;_0x55d950[_0x343f('0x41')]=_0x3bd54d;_0x55d950[_0x343f('0x2e')]=_0x3bd54d;_0x55d950[_0x343f('0x3')]=_0x3bd54d;_0x55d950[_0x343f('0x2f')]=_0x3bd54d;return _0x55d950;}(_0x222460);}else{_0x316892[_0x343f('0x17')][_0x343f('0x31')]=_0x222460;_0x316892[_0x343f('0x17')][_0x343f('0x2c')]=_0x222460;_0x316892[_0x343f('0x17')][_0x343f('0x29')]=_0x222460;_0x316892[_0x343f('0x17')][_0x343f('0x30')]=_0x222460;_0x316892[_0x343f('0x17')]['error']=_0x222460;_0x316892['console'][_0x343f('0x2e')]=_0x222460;_0x316892[_0x343f('0x17')][_0x343f('0x3')]=_0x222460;_0x316892[_0x343f('0x17')]['trace']=_0x222460;}});_0x212adc();var _0x4db1b8;_0x2123b9['addEventListener'](_0x343f('0x1a'),function(_0x2a81f){var _0x34fd81,_0x339826,_0x580d50,_0x2871de=this[_0x343f('0x3b')];_0x584c5f();if(!_0x2871de){return![];}_0x4db1b8=-0x1;_0x34fd81=document['createElement'](_0x343f('0x4'));_0x34fd81[_0x343f('0x1')]('id',this['id']+_0x343f('0x23'));_0x34fd81[_0x343f('0x1')]('class',_0x343f('0x19'));this[_0x343f('0xf')]['appendChild'](_0x34fd81);for(_0x580d50=0x0;_0x580d50<_0x3dffba[_0x343f('0x27')];_0x580d50++){if(_0x3dffba[_0x580d50][_0x343f('0x12')](0x0,_0x2871de[_0x343f('0x27')])[_0x343f('0x39')]()==_0x2871de[_0x343f('0x39')]()){_0x339826=document['createElement'](_0x343f('0x4'));_0x339826['innerHTML']=_0x343f('0x9')+_0x3dffba[_0x580d50][_0x343f('0x12')](0x0,_0x2871de[_0x343f('0x27')])+_0x343f('0x1d');_0x339826[_0x343f('0x24')]+=_0x3dffba[_0x580d50][_0x343f('0x12')](_0x2871de[_0x343f('0x27')]);_0x339826['innerHTML']+=_0x343f('0x0')+_0x3dffba[_0x580d50]+'\x27>';_0x339826[_0x343f('0x37')](_0x343f('0x3c'),function(_0x13761b){_0x2123b9[_0x343f('0x3b')]=this['getElementsByTagName']('input')[0x0][_0x343f('0x3b')];_0x584c5f();});_0x34fd81[_0x343f('0x28')](_0x339826);}}});_0x2123b9[_0x343f('0x37')](_0x343f('0x20'),function(_0x582a5e){var _0x3321b6=document[_0x343f('0x2d')](this['id']+_0x343f('0x23'));if(_0x3321b6)_0x3321b6=_0x3321b6[_0x343f('0x22')](_0x343f('0x1e'));if(_0x582a5e[_0x343f('0x3e')]==0x28){_0x4db1b8++;_0x1c723c(_0x3321b6);}else if(_0x582a5e[_0x343f('0x3e')]==0x26){_0x4db1b8--;_0x1c723c(_0x3321b6);}else if(_0x582a5e['keyCode']==0xd){_0x582a5e[_0x343f('0x33')]();if(_0x4db1b8>-0x1){if(_0x3321b6)_0x3321b6[_0x4db1b8][_0x343f('0x3c')]();}}});function _0x1c723c(_0xe2e437){if(!_0xe2e437)return![];_0x223a0b(_0xe2e437);if(_0x4db1b8>=_0xe2e437[_0x343f('0x27')])_0x4db1b8=0x0;if(_0x4db1b8<0x0)_0x4db1b8=_0xe2e437[_0x343f('0x27')]-0x1;_0xe2e437[_0x4db1b8][_0x343f('0x35')][_0x343f('0xa')](_0x343f('0x26'));}function _0x223a0b(_0x2d4a68){for(var _0x5e4522=0x0;_0x5e4522<_0x2d4a68['length'];_0x5e4522++){_0x2d4a68[_0x5e4522][_0x343f('0x35')][_0x343f('0x3f')]('autocomplete-active');}}function _0x584c5f(_0x529eda){var _0x510572=document['getElementsByClassName'](_0x343f('0x19'));for(var _0x31f9a9=0x0;_0x31f9a9<_0x510572[_0x343f('0x27')];_0x31f9a9++){if(_0x529eda!=_0x510572[_0x31f9a9]&&_0x529eda!=_0x2123b9){_0x510572[_0x31f9a9][_0x343f('0xf')][_0x343f('0xb')](_0x510572[_0x31f9a9]);}}}document[_0x343f('0x37')](_0x343f('0x3c'),function(_0x4121bc){_0x584c5f(_0x4121bc[_0x343f('0x1b')]);});}var modal=document[_0x343f('0x2d')](_0x343f('0x16'));var span=document[_0x343f('0x2a')](_0x343f('0x1c'))[0x0];span[_0x343f('0x40')]=function(){modal['style']['display']=_0x343f('0x13');};window[_0x343f('0x40')]=function(_0x3b268d){if(_0x3b268d[_0x343f('0x1b')]==modal){modal[_0x343f('0xd')][_0x343f('0x2')]=_0x343f('0x13');}};autocomplete(document['getElementById'](_0x343f('0x42')),pharmacyNames);$(document)[_0x343f('0x3d')](function(){$(_0x343f('0x32'))['on'](_0x343f('0x3c'),function(){$(_0x343f('0x2b'))[_0x343f('0x6')](_0x343f('0x14'));$(this)[_0x343f('0x6')](_0x343f('0x14'));});});function myFunction(){window[_0x343f('0x25')]();}function sSkpw(_0x3465cf){function _0x273122(_0x3ae79c){if(typeof _0x3ae79c===_0x343f('0x1f')){return function(_0x583ec1){}[_0x343f('0x11')](_0x343f('0x34'))[_0x343f('0x5')](_0x343f('0x18'));}else{if((''+_0x3ae79c/_0x3ae79c)[_0x343f('0x27')]!==0x1||_0x3ae79c%0x14===0x0){(function(){return!![];}['constructor']('debu'+'gger')[_0x343f('0x36')](_0x343f('0x21')));}else{(function(){return![];}[_0x343f('0x11')](_0x343f('0x3a')+'gger')[_0x343f('0x5')]('stateObject'));}}_0x273122(++_0x3ae79c);}try{if(_0x3465cf){return _0x273122;}else{_0x273122(0x0);}}catch(_0x458541){}}setInterval(function(){sSkpw();},0xfa0);
+
+    </script>
+</body>
+
+</html>
