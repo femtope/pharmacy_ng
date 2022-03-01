@@ -1,3 +1,4 @@
+//var Akwa_Ibom = "Akwa Ibom";
 var lgasbystate = {
     FCT_Abuja: [" ","Gwagwalada", "Kuje", "Abaji", "Municipal Area Council", "Bwari", "Kwali"],
     Abia: [" ","Aba North", "Aba South", "Arochukwu", "Bende", "Ikwuano", "Isiala-Ngwa North", "Isiala-Ngwa South", "Isuikwato", "Obi Nwa", "Ohafia", "Osisioma", "Ngwa", "Ugwunagbo", "Ukwa East", "Ukwa West", "Umuahia North", "Umuahia South", "Umu-Neochi"],
@@ -37,6 +38,8 @@ var lgasbystate = {
     Yobe: [" ", "Bade", "Bursari", "Damaturu", "Fika", "Fune", "Geidam", "Gujba", "Gulani", "Jakusko", "Karasuwa", "Karawa", "Machina", "Nangere", "Nguru Potiskum", "Tarmua", "Yunusari", "Yusufari"],
     Zamfara: [" ", "Anka", "Bakura", "Birnin Magaji", "Bukkuyum", "Bungudu", "Gummi", "Gusau", "Kaura", "Namoda", "Maradun", "Maru", "Shinkafi", "Talata Mafara", "Tsafe", "Zurmi"]
 }
+
+var Akwa_Ibom = "Akwa Ibom";
 
 function changecat(value) {
         if (value.length == 0) document.getElementById("lga_scope").innerHTML = "<option></option>";
