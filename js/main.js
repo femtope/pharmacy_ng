@@ -222,7 +222,7 @@ function addDataToMap(geojson) {
                 if (modal) {
                     modal.style.display = 'block';
                     // Display the detailed info in the modal
-                    displayInfo(feature.properties); 
+                    // displayInfo(feature.properties); 
                 }
             });
 
@@ -258,9 +258,14 @@ function addDataToMap(geojson) {
 // Used for quick marker popups
 function buildPopupContent(props) {
     let popupHtml = `
+        ${props.picture ? `<img src='${props.picture}' alt='Image not available' height='150' style='width: 100%; object-fit: cover;'><br>` : ''}<br>
         <b>${props.name_of_pharmacy || "Unnamed Pharmacy"}</b><br>
-        <small>${props.address || "No address"}</small><br>
-        <b>Verification:</b> ${props.verify || "Unknown"}
+        <small>${props.address || "No address"}</small><br>        
+        <b>State:</b> ${props.state || "N/A"}<br>
+        <b>LGA:</b> ${props.lga || "N/A"}<br>
+        <b>Status:</b> ${props.status || "Unknown"}<br>
+        <b>Verification:</b> ${props.verify || "Unknown"}<br>
+        <b>Phone:</b> ${props.phone || "N/A"}
     `;
     return popupHtml;
 }
