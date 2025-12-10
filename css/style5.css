@@ -1,6 +1,4 @@
-/*
-    DEMO STYLE
-*/
+/* DEMO STYLE */
 @import "https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700";
 
 
@@ -58,7 +56,7 @@ a, a:hover, a:focus {
 
 
 .sidebar-header {
-  content:url(../image/phlogo.png);
+  /* content:url(../image/phlogo.png); */
    width:150px; /*width of your image*/
    height:150px; /*height of your image*/
    margin:auto; /* If you want no margin */
@@ -181,14 +179,14 @@ a.article, a.article:hover {
 }
 
 #sidebarCollapse span:first-of-type {
-    //transform: rotate(-180deg) translate(2px, 2px);
+    /* //transform: rotate(-180deg) translate(2px, 2px); */
 }
 #sidebarCollapse span:nth-of-type(2) {
         transform: rotate(180deg) translate(1px, -1px);
     opacity: 0;
 }
 #sidebarCollapse span:last-of-type {
-    //transform: rotate(180deg) translate(1px, -1px);
+    /* //transform: rotate(180deg) translate(1px, -1px); */
 }
 
 
@@ -217,7 +215,7 @@ a.article, a.article:hover {
         transform: none;
         opacity: 1;
         margin: 5px auto;
-        //display: none;
+        /* //display: none; */
     }
     #sidebarCollapse.active span {
         margin: 0 auto;
