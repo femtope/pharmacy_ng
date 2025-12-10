@@ -71,7 +71,12 @@ var baseMaps = {
 
 L.control.layers(baseMaps).addTo(map);
 
-var markerCluster = L.markerClusterGroup();
+
+var markerCluster = L.markerClusterGroup({
+    showCoverageOnHover: false, // <-- ADD this option
+    zoomToBoundsOnClick: true,   // <-- Recommended defaults, can be added if needed
+    removeOutsideVisibleBounds: true 
+});
 map.addLayer(markerCluster);
 
 
@@ -81,10 +86,7 @@ map.addLayer(markerCluster);
 function dropdownToDbString(val) {
     if (!val || typeof val !== 'string') return val;
     var s = val.trim();
-    // var s = val.trim().replace(/_/g, ' ');
-    // if (s.toUpperCase() === 'FCT ABUJA') {
-    //     s = 'FCT'; 
-    // }
+
     return s;
 }
 
@@ -270,29 +272,6 @@ function buildPopupContent(props) {
     return popupHtml;
 }
 
-// Used for detailed modal info (assuming an HTML element #infoContent exists)
-// function displayInfo(props) {
-//     let infoHtml = `
-//         <div style="color:black">
-//             <h4>${props.name_of_pharmacy || "Unnamed Pharmacy"}</h4>
-//             ${props.picture ? `<img src='${props.picture}' alt='Image not available' height='150' style='width: 100%; object-fit: cover;'><br>` : ''}
-//             <p><strong>Address:</strong> ${props.address || "N/A"}</p>
-//             <p><strong>State:</strong> ${props.state || "N/A"}</p>
-//             <p><strong>LGA:</strong> ${props.lga || "N/A"}</p>
-//             <p><strong>Status:</strong> ${props.status || "Unknown"}</p>
-//             <p><strong>Verification:</strong> ${props.verify || "Unknown"}</p>
-//             <p><strong>Phone:</strong> ${props.phone || "N/A"}</p>
-//         </div>
-//     `;
-    
-//     // Target the modal content area
-//     const infoContentEl = document.getElementById('infoContent');
-//     if (infoContentEl) {
-//         infoContentEl.innerHTML = infoHtml;
-//     } else {
-//          console.warn("#infoContent not found. Detailed view skipped.");
-//     }
-// }
 
 function contactInfo() {
     var modal = document.getElementById('myModal');
@@ -316,10 +295,29 @@ function contactInfo() {
 /* ===============================
 // ADMIN LAYERS (Boundary Loading/Filtering)
 // =============================== */
+
+
 function addAdminLayersToMap(layers) {
+    // REDUCED FILL OPACITY FOR STATE/LGA SELECTION LAYERS TO ALLOW HOVER ON CHOROPLETH
     var layerStyles = {
-        'admin0': { "clickable": true, "color": '#B81609', "fillColor": '#ffffff', "weight": 2.0, "opacity": 1, "fillOpacity": 0.05 },
-        'region': { "clickable": true, "color": '#e2095c', "fillColor": '#80FFFFFF', "weight": 2.0, "opacity": 0.7, "fillOpacity": 0.05 }
+        'admin0': { "clickable": true, "color": '#B81609', "fillColor": '#ffffff', "weight": 2.0, "opacity": 1, "fillOpacity": 0.01 }, // Very low fill opacity
+        'region': { "clickable": true, "color": '#e2095c', "fillColor": '#80FFFFFF', "weight": 2.0, "opacity": 0.7, "fillOpacity": 0.15 }, // Very low fill opacity
+        'admin2': { // Added from deobfuscation for completeness
+            'clickable': true,
+            'color': '#412406',
+            'fillColor': '#ffffff',
+            'weight': 1.5,
+            'opacity': 0.5,
+            'fillOpacity': 0.05
+        },
+        'prefecture': { // Added from deobfuscation for completeness
+            'clickable': true,
+            'color': '#381CF1',
+            'fillColor': '#ffffff',
+            'weight': 2.5,
+            'opacity': 0.7,
+            'fillOpacity': 0.05
+        }
     };
 
     var stateSelect = document.getElementById('state_scope') ? dropdownToDbString(document.getElementById('state_scope').value) : '';
@@ -331,56 +329,41 @@ function addAdminLayersToMap(layers) {
     if (lga_layer) map.removeLayer(lga_layer);
     if (lga_population_layer) map.removeLayer(lga_population_layer); 
     
-    // Add Admin 0 (National Boundary)
+    // 1. Add Admin 0 (National Boundary) - STATIC, BASE LAYER
     if (layers['nigeriaAdmin0']) {
         nigeriaAdminLayer0 = L.geoJson(layers['nigeriaAdmin0'], { style: layerStyles['admin0'] }).addTo(map);
     }
     
-    // Add Choropleth LGA Layer (Interactive) 
+    // 2. Add State Layer (for visual filter feedback) - STATIC, LOW INTERACTIVITY
+    if (layers['nigeriaAdmin1']) {
+        state_layer = L.geoJson(layers['nigeriaAdmin1'], {
+            filter: function (feature) {
+                // If 'All' is selected, show all boundaries or none. Here we show boundaries if state is selected.
+                return (!stateSelect) ? false : (feature.properties && feature.properties.StateName === stateSelect);
+            },
+            style: layerStyles['region']
+        }).addTo(map);
+    }
+
+    // 3. Add LGA Layer (for visual filter feedback) - STATIC, LOW INTERACTIVITY
+    if (layers['nigeriaAdmin2']) {
+        lga_layer = L.geoJson(layers['nigeriaAdmin2'], {
+            filter: function (feature) {
+                // Only show boundary for the specifically selected LGA
+                return (!lgaSelect) ? false : (feature.properties && (feature.properties.LGAName === lgaSelect));
+            },
+            style: layerStyles['region']
+        }).addTo(map);
+    }
+
+    // 4. Add Choropleth LGA Layer (Interactive) - THIS MUST BE ADDED LAST TO ENSURE IT RECEIVES MOUSE EVENTS
     if (layers['nigeriaAdmin2']) {
         lga_population_layer = L.geoJson(layers['nigeriaAdmin2'], {
             style: styleByDensity,
             onEachFeature: onEachLGAFeature
         }).addTo(map);
     }
-
-    // Add State Layer (for visual filter feedback)
-    if (layers['nigeriaAdmin1']) {
-        state_layer = L.geoJson(layers['nigeriaAdmin1'], {
-            filter: function (feature) {
-                return (!stateSelect) ? true : (feature.properties && feature.properties.StateName === stateSelect);
-            },
-            style: layerStyles['region']
-        }).addTo(map);
-    }
-
-    // Add LGA Layer (for visual filter feedback)
-    if (layers['nigeriaAdmin2']) {
-        lga_layer = L.geoJson(layers['nigeriaAdmin2'], {
-            filter: function (feature) {
-                return (!lgaSelect) ? false : (feature.properties && (feature.properties.LGAName === lgaSelect));
-            },
-            style: layerStyles['region']
-        }).addTo(map);
-    }
 }
-
-// function getAdminLayers() {
-//     var adminLayers = {};
-//     // Assumes NGR_AdminX.json files are in a 'resources/' folder
-//     fetch('resources/NGR_Admin0.json').then(r => r.json()).then(n0 => {
-//         adminLayers['nigeriaAdmin0'] = n0;
-//         return fetch('resources/NGR_Admin1.json');
-//     }).then(r => r.json()).then(n1 => {
-//         adminLayers['nigeriaAdmin1'] = n1;
-//         return fetch('resources/NGR_Admin2.json');
-//     }).then(r => r.json()).then(n2 => {
-//         adminLayers['nigeriaAdmin2'] = n2;
-//         addAdminLayersToMap(adminLayers);
-//     }).catch(err => {
-//         console.warn("Admin layers load failed. Check 'resources/' folder and file names.", err);
-//     });
-// }
 
 
 function getAdminLayers() {
@@ -423,6 +406,7 @@ function getColor(d) {
 }
 
 function styleByDensity(feature) {
+    const density = feature.properties.exts_pop_density || -1;
     return {
         weight: 1,
         opacity: -1, // Hidden border until hover
@@ -430,7 +414,8 @@ function styleByDensity(feature) {
         dashArray: '3',
         fillOpacity: 0.3,
         // The property must match your GeoJSON structure
-        fillColor: getColor(feature.properties.exts_pop_density || 0) 
+        // fillColor: getColor(feature.properties.exts_pop_density || 0) 
+        fillColor: getColor(density)
     };
 }
 
@@ -479,10 +464,16 @@ info.onAdd = function (map) {
 
 // Method to update the info control content
 info.update = function (props) {
+    const densityValue = (props && (props.exts_pop_density !== undefined && props.exts_pop_density !== null))
+        ? props.exts_pop_density
+        : 'N/A';
+    
     this._div.innerHTML = '<h4>Population Density</h4>' +  (props ?
-        '<b>' + props.LGAName + ', ' + props.StateName + '</b><br />' + 
-        (props.exts_pop_density || 'N/A') + ' pop/km<sup>2</sup>'
+        '<b>' + props.LGAName + ', ' + props.StateCode + '</b><br />' + 
+        (densityValue === 'N/A' ? 'N/A' : densityValue + ' pop/km<sup>2</sup>')
         : 'Hover over a LGA');
+
+
 };
 info.addTo(map);
 
