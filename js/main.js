@@ -19,7 +19,7 @@ const BASE_QUERY_URL =
 // ===============================
 // LEAFLET MAP SETUP
 // ===============================
-var map = L.map("map").setView([9.1, 7.4], 7); // Nigeria center
+var map = L.map("map").setView([9.1, 7.4], 6); // Nigeria center
 
 L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
   maxZoom: 19,
