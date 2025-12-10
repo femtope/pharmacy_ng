@@ -60,23 +60,6 @@ async function getData(sqlQuery) {
     console.error("Error:", err);
   }
 }
-// async function getData(sqlQuery) {
-//   showLoader();
-
-//   const url = "php/api.php?q=" + encodeURIComponent(sqlQuery);
-
-//   try {
-//     const response = await fetch(url);
-//     const geojson = await response.json();
-
-//     hideLoader();
-//     addDataToMap(geojson);
-
-//   } catch (err) {
-//     hideLoader();
-//     console.error("Error:", err);
-//   }
-// }
 
 // ===============================
 // SQL BUILDER (State, LGA, Name)
