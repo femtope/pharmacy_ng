@@ -508,11 +508,11 @@ function triggerUiUpdate() {
     const sql = buildQuery(false);
     
     // 1. Update CSV Download Link 
-    let download_query = sql.replace('SELECT *', 'SELECT *') + "&format=CSV";
-    const queryEl = document.getElementById('downloadLink'); 
-    if (queryEl) {
-        queryEl.setAttribute("href", `${CARTO_V3_BASE}?format=csv&q=${encodeURIComponent(sql)}`);
-    }
+    // let download_query = sql.replace('SELECT *', 'SELECT *') + "&format=CSV";
+    // const queryEl = document.getElementById('downloadLink'); 
+    // if (queryEl) {
+    //     queryEl.setAttribute("href", `${CARTO_V3_BASE}?format=csv&q=${encodeURIComponent(sql)}`);
+    // }
 
     // 2. Refresh Map Data
     getData(sql);
@@ -554,13 +554,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Initialise the CSV download link with the limited query
     // triggerUiUpdate();
-    const downloadLinkEl = document.getElementById('downloadLink');
-    if (downloadLinkEl) {
-        downloadLinkEl.setAttribute(
-            "href",
-            `${CARTO_V3_BASE}?format=csv&q=${encodeURIComponent(sql)}`
-        );
-    }
+    // const downloadLinkEl = document.getElementById('downloadLink');
+    // if (downloadLinkEl) {
+    //     downloadLinkEl.setAttribute(
+    //         "href",
+    //         `${CARTO_V3_BASE}?format=csv&q=${encodeURIComponent(sql)}`
+    //     );
+    // }
 
     // Hook up modal close (assuming 'myModal' and a close button '.close')
     var modal = document.getElementById('myModal');
@@ -571,3 +571,45 @@ document.addEventListener('DOMContentLoaded', function () {
         };
     }
 });
+
+
+
+/* =========================
+   DOWNLOAD JSON (WORKING FORMAT)
+   ========================= */
+async function triggerJSONDownload() {
+    showLoader();
+    
+    try {
+        // Build the full query (no limit, fetch all)
+        const sqlQuery = buildQuery(false); 
+
+        // Fetch data using the WORKING 'json' format
+        // Use 'json' format and include the access_token in the URL
+        const apiUrl = 
+            `${CARTO_V3_BASE}?format=json&q=${encodeURIComponent(sqlQuery)}&access_token=${CARTO_TOKEN}`;
+
+        const response = await fetch(apiUrl, {
+            method: "GET",
+            headers: { "Authorization": "Bearer " + CARTO_TOKEN },
+        });
+
+        if (!response.ok) {
+            throw new Error(`CARTO download request failed: ${response.status}`);
+        }
+
+        const data = await response.json();
+        
+        // Open a new window with the raw JSON data
+        const jsonString = JSON.stringify(data, null, 2);
+        const newWindow = window.open();
+        newWindow.document.write('<pre>' + jsonString + '</pre>');
+        newWindow.document.title = 'Pharmacy Data JSON';
+        
+    } catch (err) {
+        console.error("JSON Download Error:", err);
+        alert("Failed to fetch JSON: " + (err.message || "An unknown error occurred. Check the console."));
+    } finally {
+        hideLoader();
+    }
+}
