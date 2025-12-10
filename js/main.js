@@ -11,9 +11,9 @@
 // ===============================
 // CARTO SETTINGS
 // ===============================
-// const CARTO_TOKEN = "eyJhbGciOiJIUzI1NiJ9.eyJhIjoiYWNfZXg2eDA1M3ciLCJqdGkiOiI4MjBlOWYyYiJ9.jEOQJgIKSvR40v7RyRpx89QZwLt11DTBZJ2WykET6sE"; 
-// const BASE_QUERY_URL =
-//   "https://gcp-us-east1.api.carto.com/v3/maps/carto_dw/query";
+const CARTO_TOKEN = "eyJhbGciOiJIUzI1NiJ9.eyJhIjoiYWNfZXg2eDA1M3ciLCJqdGkiOiI4MjBlOWYyYiJ9.jEOQJgIKSvR40v7RyRpx89QZwLt11DTBZJ2WykET6sE"; 
+const BASE_QUERY_URL =
+  "https://gcp-us-east1.api.carto.com/v3/maps/carto_dw/query";
 
 
 // ===============================
@@ -32,41 +32,24 @@ map.addLayer(markerCluster);
 // ===============================
 // FETCH DATA FROM CARTO
 // ===============================
-// async function getData(sqlQuery) {
-//   showLoader();
-
-//   const apiUrl =
-//     BASE_QUERY_URL +
-//     "?format=geojson&q=" +
-//     encodeURIComponent(sqlQuery);
-
-//   try {
-//     const response = await fetch(apiUrl, {
-//       method: "GET",
-//       headers: {
-//         "Authorization": "Bearer " + CARTO_TOKEN,
-//       },
-//     });
-
-//     if (!response.ok) throw new Error("CARTO request failed");
-
-//     const geojson = await response.json();
-
-//     hideLoader();
-//     addDataToMap(geojson);
-
-//   } catch (err) {
-//     hideLoader();
-//     console.error("Error:", err);
-//   }
-// }
 async function getData(sqlQuery) {
   showLoader();
 
-  const url = "php/api.php?q=" + encodeURIComponent(sqlQuery);
+  const apiUrl =
+    BASE_QUERY_URL +
+    "?format=geojson&q=" +
+    encodeURIComponent(sqlQuery);
 
   try {
-    const response = await fetch(url);
+    const response = await fetch(apiUrl, {
+      method: "GET",
+      headers: {
+        "Authorization": "Bearer " + CARTO_TOKEN,
+      },
+    });
+
+    if (!response.ok) throw new Error("CARTO request failed");
+
     const geojson = await response.json();
 
     hideLoader();
@@ -77,6 +60,23 @@ async function getData(sqlQuery) {
     console.error("Error:", err);
   }
 }
+// async function getData(sqlQuery) {
+//   showLoader();
+
+//   const url = "php/api.php?q=" + encodeURIComponent(sqlQuery);
+
+//   try {
+//     const response = await fetch(url);
+//     const geojson = await response.json();
+
+//     hideLoader();
+//     addDataToMap(geojson);
+
+//   } catch (err) {
+//     hideLoader();
+//     console.error("Error:", err);
+//   }
+// }
 
 // ===============================
 // SQL BUILDER (State, LGA, Name)
