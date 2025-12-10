@@ -15,6 +15,17 @@ const CARTO_TOKEN = "eyJhbGciOiJIUzI1NiJ9.eyJhIjoiYWNfZXg2eDA1M3ciLCJqdGkiOiI4Mj
 const BASE_QUERY_URL =
   "https://gcp-us-east1.api.carto.com/v3/maps/carto_dw/query";
 
+const verifiedIcon = L.icon({
+  iconUrl: "image/verified.png",
+  iconSize: [35, 35],
+  iconAnchor: [17, 34]
+});
+
+const unverifiedIcon = L.icon({
+  iconUrl: "image/unverified.png",
+  iconSize: [35, 35],
+  iconAnchor: [17, 34]
+});
 
 // ===============================
 // LEAFLET MAP SETUP
@@ -145,9 +156,17 @@ function addDataToMap(geojson) {
       <small>${feature.properties.address || "No address"}</small><br>
       <b>State:</b> ${feature.properties.state}<br>
       <b>LGA:</b> ${feature.properties.lga}<br>
-      <b>Status:</b> ${feature.properties.status || "Unknown"}
+      <b>Status:</b> ${feature.properties.status || "Unknown"}<br>
+      <b>Verification:</b> ${feature.properties.verify || "Unknown"}
     `;
+    let icon = unverifiedIcon;
 
+    if (
+      feature.properties.verify &&
+      feature.properties.verify.toLowerCase() === "verified"
+    ) {
+      icon = verifiedIcon;
+    }
     let marker = L.marker([lat, lng]).bindPopup(popupHtml);
     markerCluster.addLayer(marker);
   });
