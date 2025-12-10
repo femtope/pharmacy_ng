@@ -218,12 +218,12 @@ function addDataToMap(geojson) {
             // Event listener to open full modal on click
             .on('click', function() {
                 // Assuming you have an HTML element with id 'myModal'
-                var modal = document.getElementById('myModal');
-                if (modal) {
-                    modal.style.display = 'block';
-                    // Display the detailed info in the modal
-                    // displayInfo(feature.properties); 
-                }
+                // var modal = document.getElementById('myModal');
+                // if (modal) {
+                //     modal.style.display = 'block';
+                //     // Display the detailed info in the modal
+                //     // displayInfo(feature.properties); 
+                // }
             });
 
         markerCluster.addLayer(marker);
@@ -258,8 +258,8 @@ function addDataToMap(geojson) {
 // Used for quick marker popups
 function buildPopupContent(props) {
     let popupHtml = `
-        ${props.picture ? `<img src='${props.picture}' alt='Image not available' height='150' style='width: 100%; object-fit: cover;'><br>` : ''}<br>
         <b>${props.name_of_pharmacy || "Unnamed Pharmacy"}</b><br>
+        ${props.picture ? `<img src='${props.picture}' alt='Image not available' height='150' style='width: 100%; object-fit: cover;'><br>` : ''}<br>
         <small>${props.address || "No address"}</small><br>        
         <b>State:</b> ${props.state || "N/A"}<br>
         <b>LGA:</b> ${props.lga || "N/A"}<br>
@@ -271,28 +271,28 @@ function buildPopupContent(props) {
 }
 
 // Used for detailed modal info (assuming an HTML element #infoContent exists)
-function displayInfo(props) {
-    let infoHtml = `
-        <div style="color:black">
-            <h4>${props.name_of_pharmacy || "Unnamed Pharmacy"}</h4>
-            ${props.picture ? `<img src='${props.picture}' alt='Image not available' height='150' style='width: 100%; object-fit: cover;'><br>` : ''}
-            <p><strong>Address:</strong> ${props.address || "N/A"}</p>
-            <p><strong>State:</strong> ${props.state || "N/A"}</p>
-            <p><strong>LGA:</strong> ${props.lga || "N/A"}</p>
-            <p><strong>Status:</strong> ${props.status || "Unknown"}</p>
-            <p><strong>Verification:</strong> ${props.verify || "Unknown"}</p>
-            <p><strong>Phone:</strong> ${props.phone || "N/A"}</p>
-        </div>
-    `;
+// function displayInfo(props) {
+//     let infoHtml = `
+//         <div style="color:black">
+//             <h4>${props.name_of_pharmacy || "Unnamed Pharmacy"}</h4>
+//             ${props.picture ? `<img src='${props.picture}' alt='Image not available' height='150' style='width: 100%; object-fit: cover;'><br>` : ''}
+//             <p><strong>Address:</strong> ${props.address || "N/A"}</p>
+//             <p><strong>State:</strong> ${props.state || "N/A"}</p>
+//             <p><strong>LGA:</strong> ${props.lga || "N/A"}</p>
+//             <p><strong>Status:</strong> ${props.status || "Unknown"}</p>
+//             <p><strong>Verification:</strong> ${props.verify || "Unknown"}</p>
+//             <p><strong>Phone:</strong> ${props.phone || "N/A"}</p>
+//         </div>
+//     `;
     
-    // Target the modal content area
-    const infoContentEl = document.getElementById('infoContent');
-    if (infoContentEl) {
-        infoContentEl.innerHTML = infoHtml;
-    } else {
-         console.warn("#infoContent not found. Detailed view skipped.");
-    }
-}
+//     // Target the modal content area
+//     const infoContentEl = document.getElementById('infoContent');
+//     if (infoContentEl) {
+//         infoContentEl.innerHTML = infoHtml;
+//     } else {
+//          console.warn("#infoContent not found. Detailed view skipped.");
+//     }
+// }
 
 function contactInfo() {
     var modal = document.getElementById('myModal');
