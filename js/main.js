@@ -50,11 +50,12 @@ map.addLayer(markerCluster);
 // Convert dropdown token value to DB-friendly state string: "Akwa_Ibom" -> "Akwa Ibom"
 function dropdownToDbString(val) {
     if (!val || typeof val !== 'string') return val;
-    var s = val.trim().replace(/_/g, ' ');
+    // var s = val.trim().replace(/_/g, ' ');
+    var s = val.trim();
     // Handle FCT case if needed by your DB
-    if (s.toUpperCase() === 'FCT ABUJA') {
-        s = 'FCT'; 
-    }
+    // if (s.toUpperCase() === 'FCT ABUJA') {
+    //     s = 'FCT'; 
+    // }
     return s;
 }
 
