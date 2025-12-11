@@ -72,12 +72,12 @@ var baseMaps = {
 L.control.layers(baseMaps).addTo(map);
 
 
-var markerCluster = L.markerClusterGroup({
-    showCoverageOnHover: false, // <-- ADD this option
-    zoomToBoundsOnClick: true,   // <-- Recommended defaults, can be added if needed
-    removeOutsideVisibleBounds: true 
-});
-map.addLayer(markerCluster);
+// var markerCluster = L.markerClusterGroup({
+//     showCoverageOnHover: false, // <-- ADD this option
+//     zoomToBoundsOnClick: true,   // <-- Recommended defaults, can be added if needed
+//     removeOutsideVisibleBounds: true 
+// });
+// map.addLayer(markerCluster);
 
 
 /* =========================
@@ -176,10 +176,93 @@ function buildQuery(addLimit = false) {
 /* =========================
    ADD GEOJSON TO LEAFLET MAP
    ========================= */
+// function addDataToMap(geojson) {
+//     markerCluster.clearLayers();
+
+//     let validFeaturesCount = 0;
+
+//     geojson.features.forEach((feature) => {
+//         let lat = null;
+//         let lng = null;
+
+//         // Priority 1: Use GeoJSON geometry [lng, lat]
+//         if (
+//             feature.geometry &&
+//             feature.geometry.type === "Point" &&
+//             feature.geometry.coordinates
+//         ) {
+//             lng = parseFloat(feature.geometry.coordinates[0]);
+//             lat = parseFloat(feature.geometry.coordinates[1]);
+//         }
+//         // Priority 2: Fallback to latitude/longitude properties
+//         else if (feature.properties.latitude && feature.properties.longitude) {
+//             lat = parseFloat(feature.properties.latitude);
+//             lng = parseFloat(feature.properties.longitude);
+//         }
+
+//         if (!lat || !lng || isNaN(lat) || isNaN(lng)) return; // skip invalid points
+        
+//         validFeaturesCount++; 
+
+//         let popupHtml = buildPopupContent(feature.properties);
+
+//         // CHOOSE ICON
+//         let icon = unverifiedIcon;
+//         if (
+//             feature.properties.verify &&
+//             String(feature.properties.verify).toLowerCase() === "verified"
+//         ) {
+//             icon = verifiedIcon;
+//         }
+
+//         let marker = L.marker([lat, lng], { icon: icon })
+//             .bindPopup(popupHtml)
+//             // Event listener to open full modal on click
+//             .on('click', function() {
+//                 // Assuming you have an HTML element with id 'myModal'
+//                 // var modal = document.getElementById('myModal');
+//                 // if (modal) {
+//                 //     modal.style.display = 'block';
+//                 //     // Display the detailed info in the modal
+//                 //     // displayInfo(feature.properties); 
+//                 // }
+//             });
+
+//         markerCluster.addLayer(marker);
+//     });
+
+//     let countEl = document.getElementById("projectCount");
+//     if (countEl) {
+//         countEl.innerText = validFeaturesCount;
+//     }
+
+
+//     if (validFeaturesCount > 0) {
+//         let bounds = L.latLngBounds([]);
+
+//         markerCluster.eachLayer(marker => {
+//             if(typeof marker.getLatLng === 'function') {
+//                 bounds.extend(marker.getLatLng());
+//             }
+//         });
+
+//         if (bounds.isValid()) {
+//             map.fitBounds(bounds, { padding: [50, 50] });
+//         }
+//     }
+// }
+
+
 function addDataToMap(geojson) {
-    markerCluster.clearLayers();
+    // 1. Remove existing markers and re-initialize the group
+    if (markerGroup) {
+        map.removeLayer(markerGroup);
+    }
+    // Initialize markerGroup as a standard LayerGroup and add it to the map
+    markerGroup = L.layerGroup().addTo(map); 
 
     let validFeaturesCount = 0;
+    let bounds = L.latLngBounds([]); // Manually track bounds for robustness
 
     geojson.features.forEach((feature) => {
         let lat = null;
@@ -228,7 +311,8 @@ function addDataToMap(geojson) {
                 // }
             });
 
-        markerCluster.addLayer(marker);
+        markerGroup.addLayer(marker); // Add to the marker group
+        bounds.extend(marker.getLatLng()); // Extend the bounding box
     });
 
     let countEl = document.getElementById("projectCount");
@@ -238,14 +322,6 @@ function addDataToMap(geojson) {
 
 
     if (validFeaturesCount > 0) {
-        let bounds = L.latLngBounds([]);
-
-        markerCluster.eachLayer(marker => {
-            if(typeof marker.getLatLng === 'function') {
-                bounds.extend(marker.getLatLng());
-            }
-        });
-
         if (bounds.isValid()) {
             map.fitBounds(bounds, { padding: [50, 50] });
         }
